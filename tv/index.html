@@ -15,7 +15,6 @@
     if(!r.ok) throw new Error('chunk '+i+' '+r.status);
     parts.push(await r.text());
   }
-  // ASCII board: atob is safe. TextDecoder kept for future UTF-8.
   const bin=atob(parts.join(''));
   const bytes=Uint8Array.from(bin, c=>c.charCodeAt(0));
   const html=new TextDecoder('utf-8').decode(bytes);
