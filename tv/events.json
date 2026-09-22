@@ -1,7 +1,7 @@
 {
-  "_comment": "Three Cities Social  |  River North TV calendar feed. Edit this file and refresh the display (or wait for auto-refresh). Structure: date (YYYY-MM-DD), title, start?, end?, location?, sample? (true = typical/reconstructed, not confirmed on host sheet).",
+  "_comment": "Three Cities Social · River North TV calendar feed. Edit this file and refresh the display (or wait for auto-refresh). Structure: date (YYYY-MM-DD), title, start?, end?, location?, sample? (true = typical/reconstructed, not confirmed on host sheet).",
   "club": "Three Cities Social",
-  "locationDefault": "River North  |  320 W. Ohio St #7E",
+  "locationDefault": "River North · 320 W. Ohio St #7E",
   "timezone": "America/Chicago",
   "events": [
     {
@@ -95,6 +95,7 @@
       "end": "20:30",
       "location": "River North"
     },
+
     {
       "date": "2026-10-01",
       "title": "Club Closed: Private Welcome Party",
