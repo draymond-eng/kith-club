@@ -1,28 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Three Cities Social · River North Calendar</title>
-</head>
-<body style="margin:0;background:#0e0d0c;color:#e8dcc8;font:16px system-ui">
-  <p id="s" style="padding:24px">Loading River North calendar…</p>
-<script>
-(async () => {
-  const n = 13;
-  const parts = [];
-  for (let i = 0; i < n; i++) {
-    const r = await fetch('c' + i + '.txt', { cache: 'no-store' });
-    if (!r.ok) throw new Error('chunk ' + i + ' ' + r.status);
-    parts.push(await r.text());
-  }
-  const html = atob(parts.join(''));
-  document.open();
-  document.write(html);
-  document.close();
-})().catch(e => {
-  document.getElementById('s').textContent = 'Calendar failed to load: ' + e.message;
-});
-</script>
-</body>
-</html>
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Three Cities Social · River North Calendar</title><style>:root{--bg:#0e0d0c;--elev:#171614;--cell:#1c1a18;--cream:#e8dcc8;--mut:rgba(243,235,224,.45);--acc:#c4785a;--txt:#f3ebe0} *{box-sizing:border-box;margin:0;padding:0} html,body{height:100%;background:var(--bg);color:var(--txt);font:14px system-ui,sans-serif;overflow:hidden} body{display:flex;flex-direction:column;padding:14px 18px;gap:10px} header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;border-bottom:1px solid #403a34;padding-bottom:10px} .brand{font:600 22px Georgia,serif;color:var(--cream)}.brand small{display:block;font:11px system-ui;letter-spacing:.18em;text-transform:uppercase;color:var(--acc);margin-top:4px} .title{text-align:center;font:600 26px Georgia,serif}.title small{display:block;font:11px system-ui;color:var(--mut);letter-spacing:.1em;text-transform:uppercase;margin-top:3px} .clock{text-align:right;font:18px Georgia,serif;color:var(--cream)}.clock small{display:block;font:11px system-ui;color:var(--mut)} .weather{color:var(--cream);font:13px system-ui;opacity:.9} main{flex:1;min-height:0;display:flex;gap:14px} .rail{width:24%;min-width:220px;max-width:360px;background:var(--elev);border:1px solid #302b27;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px;justify-content:space-between} .rail h1{font:600 1.35rem Georgia,serif;color:var(--cream);line-height:1.15} .rail p{font-size:.9rem;line-height:1.4;color:var(--txt)} .rail .addr{color:var(--acc);font-weight:560} .qrwrap{text-align:center}.qrwrap img{width:min(100%,220px);height:auto;background:var(--cream);border-radius:8px;padding:8px} .qrwrap figcaption{margin-top:8px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut)} .cal{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px} .wd,.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px} .wd div{text-align:center;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)} .grid{flex:1;min-height:0;grid-template-rows:repeat(6,1fr)} .day{min-height:0;overflow:hidden;background:var(--cell);border:1px solid #302b27;border-radius:8px;padding:6px} .day.out{opacity:.35}.day.today{border-color:var(--acc);box-shadow:0 0 0 1px #704331} .num{font:600 16px Georgia,serif;color:var(--cream);margin-bottom:4px}.today .num{color:#e0a083} .ev{border-left:2px solid var(--acc);background:#292520;padding:3px 4px;border-radius:2px;font-size:11px;line-height:1.15;margin-bottom:3px;overflow:hidden} .ev b{display:block;font-weight:600}.ev small{color:var(--mut)} .more{color:var(--acc);font-size:10px} footer{border-top:1px solid #302b27;padding-top:6px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)} @media(max-width:1100px){.rail{display:none}}</style></head><body><header><div class="brand">Three Cities Social<small>River North · 320 W. Ohio #7E</small></div><div class="title" id="title">Loading<small>Month view</small></div><div class="clock"><div id="weather" class="weather"></div><span id="clock"></span><small>America/Chicago</small></div></header><main><aside class="rail"><div><h1>Welcome in.</h1><p>Third space in River North. Work, unwind, meet people.</p><p class="addr">320 W. Ohio St #7E</p></div><figure class="qrwrap"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgAQAAAACjtFqAAAAJ70lEQVR42m2WX2wc13nFf/fukDuyKe34TyRWZnaHioAEqNHowYUJi9aOpMCWEbRxigbxQ2qxRdCqQB0zgFttIop7ScsVE9gWH4LGKIqILlS0QIDEAQyLsSXtSMuGChrULBDUbCxqLyW5om2JO5Rp7Yg7c78+KH1qz9sBzssBDs45Svi/KPyJWjtmyiSoMaxwx8QO9f8ptUtgDFqQxvyW6MfuMsCAhRRARFxH5KxIuy7dlriOOPKj8l6j/qm08nqnfTDvvtce/xSR9nin2zrrOu362W6rPd7ptrgJVFYZGC5kVIrpM8Bb+n5QxD4AwTj9gz5PeRYkfTrNAAKN3wJ0xmDoZxMefjqIS/DCqQQpXf/3snK88OiZF+WHu1f2tI0gT4jbrh7Tw7tTJcclrbSTlk5/uRJ5POLIejTSCUcCEyJfOeu2qvFNQ9VLg0eLklYl+ZROiXJZLV+JHhlmV61n8RCJaB9IMeeNn2kf/doC3NREOB9TJfFcmnIogQe0if3J21zc1NOn/BXczB8ZMqTE1rKmtP/FbP+cKaZ/GSUnPZPh46LKN/041tMslubsCO0SWwegPN+8UZifKKZDJDnylejZz4jYgsRBUdLaEG+0Pc59svWee1YNKyRFAD/arNH43PZg0d/Hu7PpvlRZpMTAs9KyhW7MtkZaG2JBPDKRwbEPGmd7hgvL5ue2KGuZJvr6OOtRAhDDTPQz+4mqLlx6YNBeHf7Hr/7uu1/bJMF8vFbSb2Q/GHZ1t0Y7ud1fCuBbbKjWXsvArcANCuYbI6jjILpsQfddQcBA2gGs1gB6S1ojIhzBBwYK0fJIXJoY+rdfY3ErK8G/alVDRGQVKrLOMCmHRaShV8ZhGlbxsRj8UbKHeUektUp0UtYZpra3Lo132rS79esO/VAnC4fDmn9YnLyDbM7Pbf+RsrrZbMtxw3OmJDrWFyLGAxRxIAIB/FRH2dA5TycIUTKh4AKyV9vCv+zDYZ6KJTCOiB0KlX8SqNYelD37ZHff/HdEyYm1uzYhk4g18wU6ZDk6BmyU/dUSvMIiH/Kml+rIzhDG3g9PpbyIIyTIPE4urFmVX/YeM28UJKX4zwdpI+vLVh12L1fj4YK8FhWPCw29nk3DVDoNicAFySDyvBzCsULiCBTPHKrrmIzWuTFlK7YQP76/3U4PUDyRtHT4+CQfOEMscRAkuxCiUI+9cJmHdkCUhRkBZDMzDUS+q658xhajM/e2XDpK8cRCl9NLWywVV2lJXF35C1MrvjL6iZ7acccGaSq/g8kWOqyhzQ0dj/WGie9PFKNj60ODlBwm9DY8Hftudqy/0Qx8V0gI/3RVSbDykQ3LS5//cNtvPhqa6Pb5h3ydhb+IY9JAvOj1l9LJjMxLtGf3YTHTqu+iOnJg3Gfn3GaEb9sy22yhmVXkpeMm3IxoCwZ6gTQUDVax4Q0wEpyJlmKYShW+uj/3tPai0fpGvBET4Rtq6SpZwmlxFTsoWTXb/a6k22pFE4g+ALdiK8kKXi8kQNLQfx27P5wLVdCfrHwfFYwAe5H2xkNWNW58Mat3Jf18+uQUH5Df4yiXqTRjqovFdHdtlJY30QNsICZHEnicOAz1c7Kg6N25d8rsV7v8O8zusDH1kuPvtwebm1FQfqaYHKrtQlTueh3I4Ew0l0c9k+CbUf0zD5KMduRARwDU9Stv4rYsJ0quGNwFTDfcsuzNwVsPF/qCfMDkEBou36pw/YSjzLarEVTn5aVawSSn9dS3FoEiBhC08UKeoCsblNn2cQyVJ9ulxd6Jhbb2fgIb+Kk+QGimXwvvk/BXuGRL5SPlrg1XmxlHUwqSdL3lNTjGh9nddUJ54On+nWlnmr8hchiyEcFxWvuZ/1TMDmJtangzoM1T6vmZNVC53m+G8+b51mC6eMLqaRehiImBQybAhuVQWx0jRMBB+k3bhIkOPZtu6sydgZCT4L2+Iw02digJKjf/6WDz7E6g8Pbxdfnzn07r0ch6oRuoRyATMOcQq1+NHwNtVRyjDERJosa1zn4B3X6IQOC5IERzurRqt0vHFrKHC7Oj1E2JJf0EE3Eep4bRgGglhIwd+pabtv6uLYbpxM2G1uKBvqjrI3mwgbGBPmDNSQZAyYG3rey5cnX5u5PZWFTomWmvXdaXYwAVn1F6BOth8Sredm/DOwLRZ0WCJARFpr3epPOwasqwHRgh4MPZ8fotpycZh5ZpAwFJYFGc1y8khuHB793HgwYCsLwxpPt+AHN0yPpGsaSq3zy9iYMltXzbVVyzeb46nxaPN4yc1AZGNmWJAknuFmSjzwuzYMZ5vogiIAbxo5t6/EuJ0cZ/R8XkQSTsSpcfJN/sypVVWs2xalytG2p1HFLqK291SNPuoTQPtQqia9ktNiU9yMCdC783NKH5+qZMTwlpxe2+pqzvFHWX3Omss1Q8KtfHyv5wNR4eOiyGsCR6q78v7Z9MPYhZ8aMCQZToLI0PPXjb68Ng+4lzovhlHQgzH9+z7mUmNndzyyO0S6URlFxtNqUb9xh4OhG9ZQADArLo6UkgTDKtr3ENUUTnV9hSB03geRnZgHYbsaHKulI47Bbkhogrl2GYwnxaq6fPl0SPPdAZtSkE/3vqArH6z/jedDiVkGSIJNgLDIZaN8bBZOCBWmBgDxaOAJVlW2neKDTj4kpt6EjS0t/87QUwAXe30CPX0wARmAwFJFHG5/S0Juhv6DG8MNBhGuCZ1Mt67LbBvf9w7uLvz/y8tjFZyOOFkjYH0lehNruzV0YLXbyRiFGklLvPLl8eY3ch6xFz8O1q6b91Fk2aDatM6MVGvUl5z6Puv8g3U664ciHTl6rzf2tgV+k3emMf5GTcOB9aozyIzClapWjrozfKhTP3ntm9VDQwWhJuftl7tnKjXFgsZOX540wx+upN2iXKB20EOylcrM/y7adD0b8iWj+nY8UlHaadkNWZMNNf2hP36XMIuBY9K2wzcc6P76VcXl6WpmTD1Zc6x7sncPqPPVCQylG4NPmB+TVa6VlIiUnVd9L01PhV88Ws1+kDRD4RAd/f5I9MprzupbeQP5CNh1T9UkH2ty/JLLVSIt7YBZxnt+es1l++9qPwbjkeg97cXDvl3a+8Gf0fYEj1DFG8e6R/JDOxdJITfmLwVfU8lJEr5+sT3zg1S9F/cse7+ieAcTomo0CyssJ5tce7n2NzNT+LtWf69X1SDG63KtoyNnsg9UwVY52QJfr1zYiI5HK7Jbnk0hHJu5Ih453DIiLinOuIiNQ7glwXkb9bfU9OLrU7rpOf7h79mLfy1dUlca2lrpyUlmvseb8lSEvqIq1cuuPSOCKdduuw8Lzk73cOj8v7Il0RkbY44Y7Iuap0O/l/yvtyRKQr7+VI93B7yUmj05F6S3Y3GnOt1v8AEnF6pWjGYSEAAAAASUVORK5CYII=" width="300" height="300" alt="QR to book a membership tour"/><figcaption>Scan to book a tour</figcaption></figure></aside><section class="cal"><div class="wd"><div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div></div><div class="grid" id="grid"></div></section></main><footer>River North TV · <span id="status">Loading…</span></footer><script>const TZ='America/Chicago';
+const WEATHER='https://api.open-meteo.com/v1/forecast?latitude=41.8925&longitude=-87.6368&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&timezone=America%2FChicago&forecast_days=1';
+let events=[];
+const pad=n=>String(n).padStart(2,'0');
+const key=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const now=()=>new Date(new Date().toLocaleString('en-US',{timeZone:TZ}));
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const tm=t=>{if(!t)return'';if(t==='24:00')return'12am';let[a,b]=t.split(':').map(Number),ap=a>=12?'pm':'am';return `${a%12||12}${b?':'+pad(b):''}${ap}`};
+function cond(c){const m={0:'Clear',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',61:'Rain',71:'Snow',80:'Showers',95:'Storm'};return m[c]||'Chicago'};
+function render(){
+const n=now(),first=new Date(n.getFullYear(),n.getMonth(),1);
+let start=new Date(first);start.setDate(first.getDate()-first.getDay());
+const today=key(n),by={};events.forEach(e=>(by[e.date]??=[]).push(e));
+document.getElementById('title').innerHTML=first.toLocaleDateString('en-US',{month:'long',year:'numeric'})+'<small>Club calendar</small>';
+let html='';
+for(let i=0;i<42;i++){
+const d=new Date(start);d.setDate(start.getDate()+i);
+const k=key(d),list=by[k]||[],out=d.getMonth()!==first.getMonth();
+html+=`<section class="day${out?' out':''}${k===today?' today':''}"><div class="num">${d.getDate()}</div>${list.slice(0,4).map(e=>`<div class="ev"><b>${esc(e.title)}</b><small>${esc(e.start&&e.end?tm(e.start)+'–'+tm(e.end):tm(e.start||e.end))}</small></div>`).join('')}${list.length>4?`<div class="more">+${list.length-4} more</div>`:''}</section>`;
+}
+document.getElementById('grid').innerHTML=html;
+}
+function tick(){document.getElementById('clock').textContent=now().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}
+async function weather(){
+try{
+const j=await(await fetch(WEATHER,{cache:'no-store'})).json();
+const t=Math.round(j.current.temperature_2m);
+const hi=Math.round(j.daily.temperature_2m_max[0]),lo=Math.round(j.daily.temperature_2m_min[0]);
+document.getElementById('weather').textContent=`${cond(j.current.weather_code)} ${t}° · H ${hi}° L ${lo}°`;
+}catch(e){document.getElementById('weather').textContent='';}
+}
+async function boot(){
+try{
+const j=await(await fetch('events.json',{cache:'no-store'})).json();
+events=j.events||j||[];
+document.getElementById('status').textContent=`Auto-refresh · ${events.length} events`;
+}catch(e){document.getElementById('status').textContent='Events unavailable'}
+render();tick();weather();
+}
+boot();
+setInterval(tick,15000);
+setInterval(weather,15*60*1000);
+setInterval(boot,7*60*1000);
+addEventListener('resize',render);</script></body></html>
