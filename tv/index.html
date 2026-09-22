@@ -1,24 +1,80 @@
-<!DOCTYPE html>
-<html lang="en"><head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Three Cities Social | River North Calendar</title>
-</head>
-<body style="margin:0;background:#0e0d0c;color:#e8dcc8;font:16px system-ui">
-<p id="s" style="padding:24px">Loading River North calendar...</p>
-<script>
-(async()=>{
-  const n=13;
-  const parts=[];
-  for(let i=0;i<n;i++){
-    const r=await fetch('c'+i+'.txt',{cache:'no-store'});
-    if(!r.ok) throw new Error('chunk '+i+' '+r.status);
-    parts.push(await r.text());
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Three Cities Social  |  River North Calendar</title><style>
+:root{--bg:#0e0d0c;--elev:#171614;--cell:#1c1a18;--cream:#e8dcc8;--mut:rgba(243,235,224,.45);--acc:#c4785a;--txt:#f3ebe0}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--txt);font:14px system-ui,sans-serif;overflow:hidden}
+body{display:flex;flex-direction:column;padding:14px 18px;gap:10px}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;border-bottom:1px solid #403a34;padding-bottom:10px}
+.brand{font:600 22px Georgia,serif;color:var(--cream)}.brand small{display:block;font:11px system-ui;letter-spacing:.18em;text-transform:uppercase;color:var(--acc);margin-top:4px}
+.title{text-align:center;font:600 26px Georgia,serif}.title small{display:block;font:11px system-ui;color:var(--mut);letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
+.clock{text-align:right;font:18px Georgia,serif;color:var(--cream)}.clock small{display:block;font:11px system-ui;color:var(--mut)}
+.weather{color:var(--cream);font:13px system-ui;opacity:.9}
+main{flex:1;min-height:0;display:flex;gap:14px}
+.rail{width:26%;min-width:240px;max-width:420px;background:var(--elev);border:1px solid #302b27;border-radius:12px;padding:16px 14px;display:flex;flex-direction:column;gap:14px;justify-content:flex-start}
+.rail h1{font:600 1.35rem Georgia,serif;color:var(--cream);line-height:1.15}
+.rail .about{display:flex;flex-direction:column;gap:8px;font-size:.88rem;line-height:1.4}
+.rail .about strong{color:var(--cream);font-weight:560}
+.rail .addr{color:var(--acc);font-weight:520}
+.qrwrap{text-align:center;padding-top:2px}
+.qrwrap img{width:min(100%,200px);height:auto;background:var(--cream);border-radius:8px;padding:8px;display:block;margin:0 auto}
+.qrwrap figcaption{margin-top:8px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
+.qrwrap figcaption .addr{display:block;color:var(--acc);margin-top:4px;letter-spacing:.04em}
+.cal{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.wd,.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.wd div{text-align:center;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.grid{flex:1;min-height:0;grid-template-rows:repeat(6,1fr)}
+.day{min-height:0;overflow:hidden;background:var(--cell);border:1px solid #302b27;border-radius:8px;padding:6px}
+.day.out{opacity:.35}.day.today{border-color:var(--acc);box-shadow:0 0 0 1px #704331}
+.num{font:600 16px Georgia,serif;color:var(--cream);margin-bottom:4px}.today .num{color:#e0a083}
+.ev{border-left:2px solid var(--acc);background:#292520;padding:3px 4px;border-radius:2px;font-size:11px;line-height:1.15;margin-bottom:3px;overflow:hidden}
+.ev b{display:block;font-weight:600}.ev small{color:var(--mut)}
+.more{color:var(--acc);font-size:10px}
+footer{border-top:1px solid #302b27;padding-top:6px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+@media(max-width:1100px){.rail{display:none}}
+</style></head><body><header><div class="brand">Three Cities Social<small>River North  |  320 W. Ohio #7E</small></div><div class="title" id="title">Loading<small>Month view</small></div><div class="clock"><div id="weather" class="weather"></div><span id="clock"></span><small>America/Chicago</small></div></header><main><aside class="rail" aria-label="Welcome"><div><h1>Welcome to Three Cities Social Club</h1><div class="about"><p>Chicago's social club for <strong>real adult friendship</strong>: altruism, connection, and culture.</p><p>A second place that isn't just another bar or networking scene. Members create the community; the club creates the environment: dinners, hangouts, volunteering, culture.</p><p class="addr">You're welcome here. 320 W Ohio #7E, River North.</p></div></div><figure class="qrwrap"><img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=8&data=https%3A%2F%2Fmeetings-na2.hubspot.com%2Fdraymond%3Fuuid%3D0f6ed97e-5852-459c-9c39-32b3e2f93b04" width="160" height="160" alt="QR to book a membership tour"/><figcaption>Scan to book a tour<span class="addr">320 W Ohio #7E</span></figcaption></figure></aside><section class="cal"><div class="wd"><div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div></div><div class="grid" id="grid"></div></section></main><footer>River North TV  |  <span id="status">Loading...</span></footer><script>
+const TZ='America/Chicago';
+const TOUR_URL="https://meetings-na2.hubspot.com/draymond?uuid=0f6ed97e-5852-459c-9c39-32b3e2f93b04";
+const WEATHER='https://api.open-meteo.com/v1/forecast?latitude=41.8925&longitude=-87.6368&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&timezone=America%2FChicago&forecast_days=1';
+window.TCS_EVENTS_EMBEDDED=[{"date": "2026-09-23", "title": "Trivia Night", "start": "19:00", "end": "21:00", "location": "River North"}, {"date": "2026-09-24", "title": "Sipping North of the Equator: Wine Tasting", "start": "19:00", "end": "21:00", "location": "River North"}, {"date": "2026-09-24", "title": "Book Club: Demon Copperhead", "start": "19:00", "end": "20:30", "location": "River North"}, {"date": "2026-09-25", "title": "Open House + Happy Hour Karaoke", "start": "17:30", "end": "21:00", "location": "River North"}, {"date": "2026-09-26", "title": "Come Back to Life: Introducing SUCO", "start": "11:00", "end": "12:00", "location": "River North"}, {"date": "2026-09-26", "title": "Lemonade: Film Watch Party", "start": "19:00", "end": "21:00", "location": "River North"}, {"date": "2026-09-28", "title": "Mahjong Evenings: The Wash", "start": "18:00", "end": "20:00", "location": "River North"}, {"date": "2026-09-28", "title": "Monday Night Football: Bears vs Eagles", "start": "18:30", "end": "22:00", "location": "River North"}, {"date": "2026-09-29", "title": "House Dinner Vol. 3", "start": "18:30", "end": "20:30", "location": "River North"}, {"date": "2026-09-29", "title": "No Book, Book Club: Can AI Connect With Us?", "start": "18:30", "end": "20:00", "location": "River North"}, {"date": "2026-09-29", "title": "Pilates with Rosie", "start": "19:00", "end": "20:00", "location": "River North"}, {"date": "2026-09-30", "title": "AI Signature Event: Claude 101", "start": "17:00", "end": "18:15", "location": "River North"}, {"date": "2026-09-30", "title": "Dating Detox", "start": "18:30", "end": "20:30", "location": "River North"}, {"date": "2026-10-01", "title": "Club Closed: Private Welcome Party", "start": "17:00", "end": "21:00", "location": "River North"}, {"date": "2026-10-02", "title": "Happy Hour: Open Bar", "start": "17:30", "end": "21:00", "location": "River North"}, {"date": "2026-10-04", "title": "Tailgate: TJs and Touchdowns", "start": "11:00", "end": "15:00", "location": "River North"}, {"date": "2026-10-06", "title": "Monthly Momentum Session", "start": "18:30", "end": "21:00", "location": "River North"}, {"date": "2026-10-08", "title": "Beef Takes: Defend Your Opinion", "start": "18:30", "end": "21:00", "location": "River North"}, {"date": "2026-10-09", "title": "Private Rental: Club Closed to Members", "start": "17:00", "end": "24:00", "location": "River North"}, {"date": "2026-10-10", "title": "Totally Awesome 90s Sleep Over", "start": "20:00", "end": "23:00", "location": "River North"}, {"date": "2026-10-14", "title": "Office Hours w/ Caralanay Cameron", "start": "15:00", "end": "20:00", "location": "River North"}, {"date": "2026-10-14", "title": "Dressed to Kill", "start": "19:00", "end": "21:00", "location": "River North"}, {"date": "2026-10-15", "title": "TCS Residency: Workplace Open Enrollment", "start": "18:00", "end": "19:30", "location": "River North"}, {"date": "2026-10-16", "title": "Happy Hour: Open Bar", "start": "17:30", "end": "21:00", "location": "River North", "sample": true}, {"date": "2026-10-17", "title": "Toy Story 5: Movie Morning", "start": "10:00", "end": "12:00", "location": "River North"}, {"date": "2026-10-22", "title": "How Women Lead: Room Rental (Club Open)", "start": "17:30", "end": "21:30", "location": "River North", "sample": true}, {"date": "2026-10-23", "title": "Happy Hour: Open Bar", "start": "17:30", "end": "21:00", "location": "River North", "sample": true}, {"date": "2026-10-23", "title": "Card Game Night", "start": "19:00", "end": "21:00", "location": "River North"}, {"date": "2026-10-24", "title": "Puzzle Night: Halloween Edition", "start": "16:00", "end": "21:00", "location": "River North"}, {"date": "2026-10-25", "title": "Tailgate: Rep Your Dip", "start": "12:00", "end": "15:00", "location": "River North"}, {"date": "2026-10-29", "title": "Fuckup Nights Chicago", "start": "18:30", "end": "21:00", "location": "River North"}, {"date": "2026-10-30", "title": "Happy Hour: Open Bar", "start": "17:30", "end": "21:00", "location": "River North", "sample": true}];
+let events=window.TCS_EVENTS_EMBEDDED.slice();
+const pad=n=>String(n).padStart(2,'0');
+const key=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const now=()=>new Date(new Date().toLocaleString('en-US',{timeZone:TZ}));
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const tm=t=>{if(!t)return'';if(t==='24:00')return'12am';let[a,b]=t.split(':').map(Number),ap=a>=12?'pm':'am';return `${a%12||12}${b?':'+pad(b):''}${ap}`};
+function cond(c){const m={0:'Clear',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',61:'Rain',71:'Snow',80:'Showers',95:'Storm'};return m[c]||'Chicago'};
+function render(){
+  const n=now(),first=new Date(n.getFullYear(),n.getMonth(),1);
+  let start=new Date(first);start.setDate(first.getDate()-first.getDay());
+  const today=key(n),by={};events.forEach(e=>(by[e.date]??=[]).push(e));
+  document.getElementById('title').innerHTML=first.toLocaleDateString('en-US',{month:'long',year:'numeric'})+'<small>Club calendar</small>';
+  let html='';
+  for(let i=0;i<42;i++){
+    const d=new Date(start);d.setDate(start.getDate()+i);
+    const k=key(d),list=by[k]||[],out=d.getMonth()!==first.getMonth();
+    html+=`<section class="day${out?' out':''}${k===today?' today':''}"><div class="num">${d.getDate()}</div>${list.slice(0,4).map(e=>`<div class="ev"><b>${esc(e.title)}</b><small>${esc(e.start&&e.end?tm(e.start)+'-'+tm(e.end):tm(e.start||e.end))}</small></div>`).join('')}${list.length>4?`<div class="more">+${list.length-4} more</div>`:''}</section>`;
   }
-  const bin=atob(parts.join(''));
-  const bytes=Uint8Array.from(bin, c=>c.charCodeAt(0));
-  const html=new TextDecoder('utf-8').decode(bytes);
-  document.open(); document.write(html); document.close();
-})().catch(e=>{ document.getElementById('s').textContent='Calendar failed to load: '+e.message; });
-</script>
-</body></html>
+  document.getElementById('grid').innerHTML=html;
+}
+function tick(){document.getElementById('clock').textContent=now().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}
+async function weather(){
+  try{
+    const j=await(await fetch(WEATHER,{cache:'no-store'})).json();
+    const t=Math.round(j.current.temperature_2m);
+    const hi=Math.round(j.daily.temperature_2m_max[0]),lo=Math.round(j.daily.temperature_2m_min[0]);
+    document.getElementById('weather').textContent=`${cond(j.current.weather_code)} ${t} deg  |  H ${hi} deg L ${lo} deg`;
+  }catch(e){document.getElementById('weather').textContent=''}
+}
+async function boot(){
+  try{
+    const j=await(await fetch('events.json',{cache:'no-store'})).json();
+    events=j.events||j||[];
+    document.getElementById('status').textContent=`Auto-refresh  |  ${events.length} events`;
+  }catch(e){document.getElementById('status').textContent='Embedded | '+events.length+' events'}
+  render();tick();weather();
+}
+boot();
+setInterval(tick,15000);
+setInterval(weather,15*60*1000);
+setInterval(boot,7*60*1000);
+addEventListener('resize',render);
+</script></body></html>
